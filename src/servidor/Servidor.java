@@ -1,4 +1,6 @@
 package servidor;
+import mensajes.Mensaje;
+import mensajes.MensajeFactory;
 
 import java.io.*;
 import java.net.*;
@@ -27,6 +29,12 @@ public class Servidor {
         ManejadorCliente(Socket socket) {
             this.socket = socket;
         }
+        private String detectarTipo(String mensaje) {
+            if (mensaje.startsWith("/alerta ")) return "alerta";
+            if (mensaje.startsWith("/noti ")) return "notificacion";
+            return "texto";
+        }
+
 
         public void run() {
             try (
@@ -50,7 +58,9 @@ public class Servidor {
 
                 String mensaje;
                 while ((mensaje = entrada.readLine()) != null) {
-                    enviarATodos(" " + nombreUsuario + ": " + mensaje);
+                    Mensaje m = MensajeFactory.crearMensaje(detectarTipo(mensaje), mensaje, nombreUsuario);
+                    enviarATodos(m.formatear());
+
                 }
             } catch (IOException e) {
                 System.out.println("Error con el cliente " + nombreUsuario);
