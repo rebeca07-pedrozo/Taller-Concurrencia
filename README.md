@@ -1,2 +1,8 @@
-# Taller-Concurrencia
-Taller Concurrencia
+- src/
+    - cliente/
+        - Cliente.java  (o la clase que gestiona la interfaz y la comunicación con el servidor)
+    - servidor/
+        - User.java     (representa al usuario conectado)
+        - Observer.java (interfaz para la notificación de cambios)
+        - ChatServer.java (gestiona los usuarios conectados y notifica cambios)
+        - ServerMain.java (si tienes una clase principal que arranca el servidor)
