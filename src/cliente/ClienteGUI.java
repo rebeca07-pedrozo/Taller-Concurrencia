@@ -97,6 +97,7 @@ public class ClienteGUI {
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Error al conectar con el servidor.");
+            e.printStackTrace();
         }
     }
 
@@ -111,13 +112,17 @@ public class ClienteGUI {
     private void enviarMensaje() {
         String mensaje = campoEntrada.getText().trim();
         if (!mensaje.isEmpty()) {
-            salida.println(mensaje);
-            campoEntrada.setText("");
+            try {
+                salida.println(mensaje);
+                campoEntrada.setText("");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(frame, "Error al enviar el mensaje.");
+                e.printStackTrace();
+            }
         }
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ClienteGUI::new);
     }
-
 }
