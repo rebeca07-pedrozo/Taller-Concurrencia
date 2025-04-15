@@ -65,8 +65,8 @@ public class Servidor {
                         usuarios.put(nombreUsuario, socket);
                         clientes.add(salida);
                         salida.println("OK");
-                        enviarATodos("🟢 " + nombreUsuario + " se ha conectado.");
-                        enviarListaUsuarios(); 
+                        enviarATodos(":) " + nombreUsuario + " se ha conectado.");
+                        enviarListaUsuarios();
                         break;
                     }
                 }
@@ -76,8 +76,10 @@ public class Servidor {
                     Mensaje m = MensajeFactory.crearMensaje(detectarTipo(mensaje), mensaje, nombreUsuario);
                     enviarATodos(m.formatear());
                 }
+
             } catch (IOException e) {
                 System.out.println("Error con el cliente " + nombreUsuario);
+                e.printStackTrace();
             } finally {
                 try {
                     if (nombreUsuario != null) {
@@ -90,7 +92,7 @@ public class Servidor {
                     }
                     socket.close();
                 } catch (IOException e) {
-                    System.out.println("Error al cerrar conexión");
+                    System.out.println("Error al cerrar la conexión de " + nombreUsuario + ". " + e.getMessage());
                 }
             }
         }
