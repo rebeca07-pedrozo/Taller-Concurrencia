@@ -15,15 +15,42 @@ public class ClienteGUI {
     private JTextArea areaMensajes = new JTextArea(15, 50);
     private JTextField campoEntrada = new JTextField(40);
     private JButton botonEnviar = new JButton("Enviar");
+    private DefaultListModel<String> modelUsuarios = new DefaultListModel<>();
+    private JList<String> listaUsuarios = new JList<>(modelUsuarios);
 
     public ClienteGUI() {
+        Color fondo = new Color(30, 30, 30);
+        Color texto = new Color(230, 230, 230);
+        Color fondoPanel = new Color(45, 45, 45);
+        Color azulOscuro = new Color(60, 60, 80);
+
         areaMensajes.setEditable(false);
-        frame.getContentPane().add(new JScrollPane(areaMensajes), BorderLayout.CENTER);
+        areaMensajes.setBackground(fondo);
+        areaMensajes.setForeground(texto);
+        areaMensajes.setCaretColor(texto);
+
+        campoEntrada.setBackground(fondoPanel);
+        campoEntrada.setForeground(texto);
+        campoEntrada.setCaretColor(texto);
+
+        botonEnviar.setBackground(azulOscuro);
+        botonEnviar.setForeground(texto);
+        botonEnviar.setFocusPainted(false);
+
+        listaUsuarios.setBackground(fondo);
+        listaUsuarios.setForeground(texto);
+        listaUsuarios.setSelectionBackground(new Color(80, 80, 120));
+        listaUsuarios.setSelectionForeground(texto);
 
         JPanel panel = new JPanel();
+        panel.setBackground(fondo);
         panel.add(campoEntrada);
         panel.add(botonEnviar);
+
+        frame.getContentPane().setBackground(fondo);
+        frame.getContentPane().add(new JScrollPane(areaMensajes), BorderLayout.CENTER);
         frame.getContentPane().add(panel, BorderLayout.SOUTH);
+        frame.getContentPane().add(new JScrollPane(listaUsuarios), BorderLayout.WEST);
 
         campoEntrada.addActionListener(e -> enviarMensaje());
         botonEnviar.addActionListener(e -> enviarMensaje());
@@ -57,7 +84,11 @@ public class ClienteGUI {
                 String mensaje;
                 try {
                     while ((mensaje = entrada.readLine()) != null) {
-                        areaMensajes.append(mensaje + "\n");
+                        if (mensaje.startsWith("/usuarios")) {
+                            actualizarListaUsuarios(mensaje);
+                        } else {
+                            areaMensajes.append(mensaje + "\n");
+                        }
                     }
                 } catch (IOException e) {
                     areaMensajes.append("Conexión cerrada\n");
@@ -66,6 +97,14 @@ public class ClienteGUI {
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Error al conectar con el servidor.");
+        }
+    }
+
+    private void actualizarListaUsuarios(String mensaje) {
+        String[] partes = mensaje.split(" ");
+        modelUsuarios.clear();
+        for (int i = 1; i < partes.length; i++) {
+            modelUsuarios.addElement(partes[i]);
         }
     }
 
@@ -80,4 +119,5 @@ public class ClienteGUI {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ClienteGUI::new);
     }
+
 }
