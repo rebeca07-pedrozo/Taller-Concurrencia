@@ -10,14 +10,14 @@ public class Servidor {
     private static final Map<String, Socket> usuarios = Collections.synchronizedMap(new HashMap<>());
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(PUERTO);
-        System.out.println("Servidor iniciado en el puerto " + PUERTO);
+        ServerSocket serverSocket = ServidorSingleton.getInstancia().getServerSocket();
 
         while (true) {
             Socket socket = serverSocket.accept();
             new Thread(new ManejadorCliente(socket)).start();
         }
     }
+
 
     static class ManejadorCliente implements Runnable {
         private Socket socket;
@@ -43,14 +43,14 @@ public class Servidor {
                         usuarios.put(nombreUsuario, socket);
                         clientes.add(salida);
                         salida.println("OK");
-                        enviarATodos("🔵 " + nombreUsuario + " se ha conectado.");
+                        enviarATodos(" " + nombreUsuario + " se ha conectado.");
                         break;
                     }
                 }
 
                 String mensaje;
                 while ((mensaje = entrada.readLine()) != null) {
-                    enviarATodos("💬 " + nombreUsuario + ": " + mensaje);
+                    enviarATodos(" " + nombreUsuario + ": " + mensaje);
                 }
             } catch (IOException e) {
                 System.out.println("Error con el cliente " + nombreUsuario);
@@ -58,7 +58,7 @@ public class Servidor {
                 try {
                     if (nombreUsuario != null) {
                         usuarios.remove(nombreUsuario);
-                        enviarATodos("🔴 " + nombreUsuario + " se ha desconectado.");
+                        enviarATodos(" " + nombreUsuario + " se ha desconectado.");
                     }
                     if (salida != null) {
                         clientes.remove(salida);
