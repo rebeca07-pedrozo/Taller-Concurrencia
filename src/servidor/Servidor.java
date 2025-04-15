@@ -1,4 +1,5 @@
 package servidor;
+
 import mensajes.Mensaje;
 import mensajes.MensajeFactory;
 
@@ -20,6 +21,19 @@ public class Servidor {
         }
     }
 
+    private static void enviarListaUsuarios() {
+        StringBuilder lista = new StringBuilder("/usuarios");
+        synchronized (usuarios) {
+            for (String usuario : usuarios.keySet()) {
+                lista.append(" ").append(usuario);
+            }
+        }
+        synchronized (clientes) {
+            for (PrintWriter cliente : clientes) {
+                cliente.println(lista.toString());
+            }
+        }
+    }
 
     static class ManejadorCliente implements Runnable {
         private Socket socket;
@@ -29,12 +43,12 @@ public class Servidor {
         ManejadorCliente(Socket socket) {
             this.socket = socket;
         }
+
         private String detectarTipo(String mensaje) {
             if (mensaje.startsWith("/alerta ")) return "alerta";
             if (mensaje.startsWith("/noti ")) return "notificacion";
             return "texto";
         }
-
 
         public void run() {
             try (
@@ -51,7 +65,8 @@ public class Servidor {
                         usuarios.put(nombreUsuario, socket);
                         clientes.add(salida);
                         salida.println("OK");
-                        enviarATodos(" " + nombreUsuario + " se ha conectado.");
+                        enviarATodos("🟢 " + nombreUsuario + " se ha conectado.");
+                        enviarListaUsuarios(); 
                         break;
                     }
                 }
@@ -60,7 +75,6 @@ public class Servidor {
                 while ((mensaje = entrada.readLine()) != null) {
                     Mensaje m = MensajeFactory.crearMensaje(detectarTipo(mensaje), mensaje, nombreUsuario);
                     enviarATodos(m.formatear());
-
                 }
             } catch (IOException e) {
                 System.out.println("Error con el cliente " + nombreUsuario);
@@ -68,7 +82,8 @@ public class Servidor {
                 try {
                     if (nombreUsuario != null) {
                         usuarios.remove(nombreUsuario);
-                        enviarATodos(" " + nombreUsuario + " se ha desconectado.");
+                        enviarATodos("!!!!!!!!! " + nombreUsuario + " se ha desconectado.");
+                        enviarListaUsuarios();
                     }
                     if (salida != null) {
                         clientes.remove(salida);
