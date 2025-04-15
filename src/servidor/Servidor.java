@@ -35,6 +35,18 @@ public class Servidor {
         }
     }
 
+    public void enviarATodos(String mensaje) {
+        synchronized (clientes) {
+            for (PrintWriter cliente : clientes) {
+                cliente.println(mensaje);
+            }
+        }
+    }
+
+    public Set<PrintWriter> getClientes() {
+        return clientes;
+    }
+
     static class ManejadorCliente implements Runnable {
         private Socket socket;
         private PrintWriter salida;
@@ -65,7 +77,7 @@ public class Servidor {
                         usuarios.put(nombreUsuario, socket);
                         clientes.add(salida);
                         salida.println("OK");
-                        enviarATodos(":) " + nombreUsuario + " se ha conectado.");
+                        new Servidor().enviarATodos(":) " + nombreUsuario + " se ha conectado.");
                         enviarListaUsuarios();
                         break;
                     }
@@ -74,7 +86,7 @@ public class Servidor {
                 String mensaje;
                 while ((mensaje = entrada.readLine()) != null) {
                     Mensaje m = MensajeFactory.crearMensaje(detectarTipo(mensaje), mensaje, nombreUsuario);
-                    enviarATodos(m.formatear());
+                    new Servidor().enviarATodos(m.formatear());
                 }
 
             } catch (IOException e) {
@@ -84,7 +96,7 @@ public class Servidor {
                 try {
                     if (nombreUsuario != null) {
                         usuarios.remove(nombreUsuario);
-                        enviarATodos("!!!!!!!!! " + nombreUsuario + " se ha desconectado.");
+                        new Servidor().enviarATodos("!!!!!!!!! " + nombreUsuario + " se ha desconectado.");
                         enviarListaUsuarios();
                     }
                     if (salida != null) {
@@ -93,14 +105,6 @@ public class Servidor {
                     socket.close();
                 } catch (IOException e) {
                     System.out.println("Error al cerrar la conexión de " + nombreUsuario + ". " + e.getMessage());
-                }
-            }
-        }
-
-        private void enviarATodos(String mensaje) {
-            synchronized (clientes) {
-                for (PrintWriter cliente : clientes) {
-                    cliente.println(mensaje);
                 }
             }
         }
