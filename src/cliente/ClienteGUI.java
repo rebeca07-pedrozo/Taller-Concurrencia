@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 
-public class ClienteGUI {
+public abstract class ClienteGUI {
     private Socket socket;
     private BufferedReader entrada;
     private PrintWriter salida;
@@ -16,7 +16,7 @@ public class ClienteGUI {
     private JTextField campoEntrada = new JTextField(40);
     private JButton botonEnviar = new JButton("Enviar");
     private DefaultListModel<String> modelUsuarios = new DefaultListModel<>();
-    private JList<String> listaUsuarios = new JList<>(modelUsuarios);
+    JList<String> listaUsuarios = new JList<>(modelUsuarios);
 
     public ClienteGUI() {
         Color fondo = new Color(30, 30, 30);
@@ -62,7 +62,7 @@ public class ClienteGUI {
         conectar();
     }
 
-    private void conectar() {
+    protected void conectar() {
         try {
             socket = new Socket("localhost", 12345);
             entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -101,7 +101,7 @@ public class ClienteGUI {
         }
     }
 
-    private void actualizarListaUsuarios(String mensaje) {
+    void actualizarListaUsuarios(String mensaje) {
         String[] partes = mensaje.split(" ");
         modelUsuarios.clear();
         for (int i = 1; i < partes.length; i++) {
@@ -122,7 +122,4 @@ public class ClienteGUI {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(ClienteGUI::new);
-    }
 }
