@@ -2,7 +2,7 @@ Proyecto: Chat Cliente-Servidor Multicliente
 Fecha del análisis: 13/04/2025
 Versión: 1.0
 
-Estas son dos de las recomendaciones de seguridad que arrojo SonarQube 
+Estas son tres de las recomendaciones de seguridad que arrojo SonarQube 
 
 1. Validación insuficiente de entrada del usuario
 Ubicación: Cliente.java / JFrameForm.java – Método que envía mensajes al servidor
@@ -29,6 +29,28 @@ Migrar a SSLSocket y SSLServerSocket, o implementar una capa TLS usando certific
 SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
 SSLServerSocket serverSocket = (SSLServerSocket) factory.createServerSocket(1234);
 ```
+3. Manejo adecuado de excepciones
+Ubicación: ClienteGUI.java – Método conectar(), Método enviarMensaje()
+
+Severidad: Media
+
+Descripción: El sistema maneja las excepciones de manera inapropiada, mostrando los detalles de las excepciones al usuario a través de printStackTrace() y mensajes genéricos como "Error al conectar con el servidor". Esto puede exponer información sensible de la aplicación, como el tipo de excepción y la pila de ejecución, lo que puede ser explotado por un atacante para identificar vulnerabilidades.
+Recomendación: Utilizar un sistema adecuado de manejo de excepciones que no exponga detalles internos al usuario. En su lugar, registrar los errores en un archivo de logs y mostrar mensajes genéricos o amigables al usuario. También se recomienda utilizar un framework de logging como java.util.logging o SLF4J para asegurar una correcta gestión de errores. 
+
+```
+private static final Logger logger = Logger.getLogger(ClienteGUI.class.getName());
+
+private void conectar() {
+    try {
+        socket = new Socket("localhost", 12345);
+        entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        salida = new PrintWriter(socket.getOutputStream(), true);
+    } catch (IOException e) {
+        logger.log(Level.SEVERE, "Error al conectar al servidor", e);
+        JOptionPane.showMessageDialog(frame, "Hubo un error al intentar conectarse al servidor. Por favor, intente más tarde.");
+    }
+}
+ ```
 
 Imagenes de interfaz 
 
