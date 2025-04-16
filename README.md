@@ -1,8 +1,42 @@
-- src/
-    - cliente/
-        - Cliente.java  (o la clase que gestiona la interfaz y la comunicación con el servidor)
-    - servidor/
-        - User.java     (representa al usuario conectado)
-        - Observer.java (interfaz para la notificación de cambios)
-        - ChatServer.java (gestiona los usuarios conectados y notifica cambios)
-        - ServerMain.java (si tienes una clase principal que arranca el servidor)
+Proyecto: Chat Cliente-Servidor Multicliente
+Fecha del análisis: 13/04/2025
+Versión: 1.0
+
+Estas son dos de las recomendaciones de seguridad que arrojo SonarQube 
+
+1. Validación insuficiente de entrada del usuario
+Ubicación: Cliente.java / JFrameForm.java – Método que envía mensajes al servidor
+Severidad: Alta
+Descripción:
+La entrada del usuario no está siendo sanitizada antes de enviarse al servidor. Esto puede permitir ataques como inyección de comandos, XSS reflejado si el mensaje es renderizado en una interfaz web, o incluso provocar fallos si se manipulan comandos del protocolo.
+Recomendación:
+Implementar validaciones OWASP, por ejemplo:
+```
+mensaje = mensaje.replaceAll("[<>]", ""); 
+```
+
+2. Uso de sockets sin cifrado
+Ubicación: Servidor.java, Cliente.java – Comunicación entre cliente y servidor
+
+Severidad: Crítica
+
+Descripción:
+El sistema usa Socket y ServerSocket sin ningún cifrado, lo que expone todos los mensajes a interceptación en red (sniffing). Esto es especialmente grave si se transmite información sensible como nombres o contraseñas.
+
+Recomendación:
+Migrar a SSLSocket y SSLServerSocket, o implementar una capa TLS usando certificados autofirmados durante el desarrollo:
+```
+SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+SSLServerSocket serverSocket = (SSLServerSocket) factory.createServerSocket(1234);
+```
+
+Imagenes de interfaz 
+
+![Image](https://github.com/user-attachments/assets/ba80b91d-f007-4e5b-ae72-d06ef3662d39)
+
+![Image](https://github.com/user-attachments/assets/70a835d1-c8ec-46f0-88f4-53ce1b052add)
+
+![Image](https://github.com/user-attachments/assets/28b52e02-5cce-41b3-a04b-2dcc5763bcea)
+
+![Image](https://github.com/user-attachments/assets/d3b1e2cd-e73d-4b9f-8995-69b4716a5e86)
+
