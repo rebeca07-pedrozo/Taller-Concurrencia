@@ -39,4 +39,4 @@ Imagenes de interfaz
 ![Image](https://github.com/user-attachments/assets/28b52e02-5cce-41b3-a04b-2dcc5763bcea)
 
 ![Image](https://github.com/user-attachments/assets/d3b1e2cd-e73d-4b9f-8995-69b4716a5e86)
-
+![Image](https://github.com/user-attachments/assets/c1c8ddd1-728a-479a-a896-c7c3fae17a92)
