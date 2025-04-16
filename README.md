@@ -56,8 +56,7 @@ Imagenes de interfaz
 
 ![Image](https://github.com/user-attachments/assets/ba80b91d-f007-4e5b-ae72-d06ef3662d39)
 
-![Image](https://github.com/user-attachments/assets/70a835d1-c8ec-46f0-88f4-53ce1b052add)
-
+![Image](https://github.com/user-attachments/assets/9e688ee6-a702-4456-85d5-3246f7d1e164)
 ![Image](https://github.com/user-attachments/assets/28b52e02-5cce-41b3-a04b-2dcc5763bcea)
 
 ![Image](https://github.com/user-attachments/assets/d3b1e2cd-e73d-4b9f-8995-69b4716a5e86)
